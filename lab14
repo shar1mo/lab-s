@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINE_LENGTH 1000
+#define FILENAME "input.txt"
+#define OUTPUT_FILENAME "output.txt"
+#define TARGET_WORD "заданное_слово"
+#define REPLACEMENT_NAME "ваше_имя"
+
+int main() {
+    FILE *input_file, *output_file;
+    char line[MAX_LINE_LENGTH];
+    char *found;
+    
+    // Открываем входной файл для чтения
+    input_file = fopen(FILENAME, "r");
+    if (input_file == NULL) {
+        perror("Ошибка открытия файла");
+        return EXIT_FAILURE;
+    }
+    
+    // Открываем выходной файл для записи
+    output_file = fopen(OUTPUT_FILENAME, "w");
+    if (output_file == NULL) {
+        perror("Ошибка открытия файла для записи");
+        fclose(input_file);
+        return EXIT_FAILURE;
+    }
+    
+    // Читаем каждую строку из входного файла
+    while (fgets(line, sizeof(line), input_file) != NULL) {
+        // Ищем заданное слово в строке
+        found = strstr(line, TARGET_WORD);
+        while (found != NULL) {
+            // Заменяем найденное слово на ваше имя
+            strncpy(found, REPLACEMENT_NAME, strlen(REPLACEMENT_NAME));
+            found = strstr(found + strlen(REPLACEMENT_NAME), TARGET_WORD);
+        }
+        
+        // Записываем измененную строку в выходной файл
+        fputs(line, output_file);
+    }
+    
+    // Закрываем файлы
+    fclose(input_file);
+    fclose(output_file);
+    
+    printf("Замена выполнена успешно. Результат записан в файл '%s'\n", OUTPUT_FILENAME);
+    
+    return EXIT_SUCCESS;
+}

@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Worker {
+    char name[50];
+    char phone[20];
+    int birthday[3];
+};
+
+void addRecord(FILE *file) {
+    struct Worker newWorker;
+    
+    printf("Enter name: ");
+    scanf("%s", newWorker.name);
+    
+    printf("Enter phone number: ");
+    scanf("%s", newWorker.phone);
+    
+    printf("Enter birthday (dd mm yyyy): ");
+    scanf("%d %d %d", &newWorker.birthday[0], &newWorker.birthday[1], &newWorker.birthday[2]);
+    
+    fwrite(&newWorker, sizeof(struct Worker), 1, file);
+    printf("Record added successfully.\n");
+}
+
+void processFile(FILE *file) {
+    int searchMonth;
+    struct Worker worker;
+    int found = 0;
+    
+    printf("Enter the month to search (1-12): ");
+    scanf("%d", &searchMonth);
+    
+    rewind(file);
+    
+    while (fread(&worker, sizeof(struct Worker), 1, file)) {
+        if (worker.birthday[1] == searchMonth) {
+            found = 1;
+            printf("Name: %s\nPhone: %s\nBirthday: %d/%d/%d\n\n", worker.name, worker.phone, worker.birthday[0], worker.birthday[1], worker.birthday[2]);
+        }
+    }
+    
+    if (!found) {
+        printf("No workers found with birthday in month %d.\n", searchMonth);
+    }
+}
+
+int main() {
+    FILE *file = fopen("WORKER.dat", "ab+");
+    char choice;
+    
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+    
+    do {
+        printf("\nEnter the operation you want to perform:\n");
+        printf("a) Add a record to the file or start a new file\n");
+        printf("b) Process the created file\n");
+        
+        scanf(" %c", &choice);
+        
+        switch(choice) {
+            case 'a':
+                addRecord(file);
+                break;
+            case 'b':
+                processFile(file);
+                break;
+            default:
+                printf("Invalid choice\n");
+        }
+        
+        printf("\nDo you want to perform another operation? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+    
+    fclose(file);
+    
+    return 0;
+}

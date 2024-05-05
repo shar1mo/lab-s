@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int age;
+    char gender[32];
+    char education[32];
+    char answer[32]; // НЕТ\0
+} Survey;
+
+int main() {
+    Survey surveys[100];
+    int count = 0;
+    char cont[10];
+
+    // Ввод анкет
+    do {
+        printf("Введите возраст: ");
+        scanf("%d%*c", &surveys[count].age);
+
+        printf("Введите пол (м/ж): ");
+        // fgets(surveys[count].gender, 10, stdin);
+        scanf("%s%*c", surveys[count].gender);
+
+        printf("Введите образование (нач/ср/выс): ");
+        // fgets(surveys[count].education, 10, stdin);
+        scanf("%s%*c", surveys[count].education);
+
+        printf("Ответ на вопрос анкеты (ДА/НЕТ): ");
+        // fgets(surveys[count].answer, 3, stdin);
+        scanf("%s%*c", surveys[count].answer);
+
+        count++;
+
+        printf("Хотите продолжить ввод анкет? (да/нет): ");
+        // fgets(cont, 5, stdin);
+        scanf("%s%*c", cont);
+
+
+    } while (strcmp(cont, "да") == 0);
+
+    // Анализ анкет
+    int yes_count_40 = 0;
+    int no_count_30 = 0;
+    int yes_count_25 = 0;
+
+    for (int i = 0; i < count; i++) {
+        if (strcmp(surveys[i].gender, "м") == 0 && surveys[i].age > 40 && strcmp(surveys[i].education, "выс") == 0 && strcmp(surveys[i].answer, "ДА") == 0) {
+            yes_count_40++;
+        }
+
+        if (strcmp(surveys[i].gender, "ж") == 0 && surveys[i].age < 30 && strcmp(surveys[i].education, "ср") == 0 && strcmp(surveys[i].answer, "НЕТ") == 0) {
+            no_count_30++;
+        }
+
+        if (strcmp(surveys[i].gender, "м") == 0 && surveys[i].age < 25 && strcmp(surveys[i].education, "нач") == 0 && strcmp(surveys[i].answer, "ДА") == 0) {
+            yes_count_25++;
+        }
+    }
+    int choice;
+    scanf("%d%*c", &choice);
+
+    switch(choice) {
+        case 1:
+            printf("Количество мужчин старше 40 лет, имеющих высшее образование, ответивших ДА: %d\n", yes_count_40);
+            break;
+        case 2:
+            printf("Количество женщин моложе 30 лет, имеющих среднее образование, ответивших НЕТ: %d\n", no_count_30);
+            break;
+        case 3:
+            printf("Количество мужчин моложе 25 лет, имеющих начальное образование, ответивших ДА: %d\n", yes_count_25);
+            break;
+        case 4:
+            printf("\nАнкеты:\n");
+                for (int i = 0; i < count; i++) {
+                    printf("Анкета %d:\n", i + 1);
+                    printf("Возраст: %d\n", surveys[i].age);
+                    printf("Пол: %s\n", surveys[i].gender);
+                    printf("Образование: %s\n", surveys[i].education);
+                    printf("Ответ на вопрос анкеты: %s\n\n", surveys[i].answer);
+                }
+            break;
+        default:
+            printf("Invalid choice\n");
+    }
+    
+    return 0;
+}

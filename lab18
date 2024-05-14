@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Library {
+private:
+    std::string establishmentType;
+    std::string subordinationType;
+
+public:
+    Library(std::string eType, std::string sType) {
+        establishmentType = eType;
+        subordinationType = sType;
+    }
+
+    std::string getEstablishmentType() const {
+        return establishmentType;
+    }
+
+    std::string getSubordinationType() const {
+        return subordinationType;
+    }
+
+    void displayInfo() const {
+        std::cout << "Establishment Type: " << establishmentType << std::endl;
+        std::cout << "Subordination Type: " << subordinationType << std::endl;
+    }
+};
+
+int main() {
+    std::vector<Library> libraries;
+    libraries.emplace_back("Public", "State");
+    libraries.emplace_back("Private", "Independent");
+    libraries.emplace_back("Public", "Local");
+
+    std::vector<Library> newLibraries;
+
+    for (const Library& lib : libraries) {
+        if (lib.getEstablishmentType() == "Public") {
+            newLibraries.push_back(lib);
+        }
+    }
+
+    if (!newLibraries.empty()) {
+        std::sort(newLibraries.begin(), newLibraries.end(), 
+            [](const Library& a, const Library& b) {
+                return a.getSubordinationType() < b.getSubordinationType();
+            });
+
+        for (const Library& lib : newLibraries) {
+            lib.displayInfo();
+            std::cout << "--------------------------" << std::endl;
+        }
+    } else {
+        std::cout << "New vector is empty." << std::endl;
+    }
+
+    return 0;
+}
